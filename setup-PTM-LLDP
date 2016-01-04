@@ -1,0 +1,44 @@
+---
+# copied from - https://community.cumulusnetworks.com/cumulus/topics/ansible-switch-basics-ptm-and-lldp
+#Copy the topology file to the remote switches- name: configure ptmd topology.dot
+-  copy: src=topology.dot dest=/etc/ptm.d/topology.dot
+  tags:
+    - ptm_setup
+    - initial_setup
+ 
+#Restart the PTM service to read in the new topology file
+- name: Restart ptmd service
+  service: name=ptmd state=restarted
+  tags:
+    - ptm_setup
+    - initial_setup
+ 
+#Poll the PTM service for the current state and details of the connections
+- name: Check PTM status
+  command: ptmctl -d
+  register: ptmctl_output
+  tags:
+    - ptm_setup
+    - initial_setup
+ 
+#Print out the results (Note in the command above you could use JSON output by adding -j)
+- name: Print PTM table
+  debug: var=ptmctl_output.stdout.split('\n')
+  tags:
+    - ptm_setup
+    - initial_setup
+ 
+#Pull the lldp neighbor table
+- name: Check lldp neighbors
+  command: lldpctl
+  register: lldpctl_output
+  tags:
+    - ptm_setup
+    - initial_setup
+ 
+#Print out the results (Note in the command above you could use JSON output by adding -f json)
+- name: Print lldp neighbors
+  debug: var=lldpctl_output.stdout.split('\n')
+  tags:
+    - ptm_setup
+    - initial_setup
