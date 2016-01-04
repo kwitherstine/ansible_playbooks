@@ -1,3 +1,4 @@
+---
 #https://community.cumulusnetworks.com/cumulus/topics/ansible-switch-basics-time-zone-and-ntp
 #Setup the switch time zone (Note this will always report changed if re-run after the dpkg-reconfigure)
 #For a list of time zones check: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
