@@ -1,3 +1,4 @@
+---
 #https://community.cumulusnetworks.com/cumulus/topics/ansible-switch-basics-apt-setup
 #Example for configuring an apt cache or mirror proxy#Contents of the 90apt-proxy file:
 - name: configure apt cache proxy
