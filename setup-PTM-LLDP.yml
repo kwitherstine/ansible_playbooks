@@ -1,5 +1,5 @@
 ---
-# copied from - https://community.cumulusnetworks.com/cumulus/topics/ansible-switch-basics-ptm-and-lldp
+#copied from - https://community.cumulusnetworks.com/cumulus/topics/ansible-switch-basics-ptm-and-lldp
 #Copy the topology file to the remote switches- name: configure ptmd topology.dot
 -  copy: src=topology.dot dest=/etc/ptm.d/topology.dot
   tags:
