@@ -1,0 +1,12 @@
+# generic example - cumulus@leaf1$ cat /etc/ptm.d/topology.dot
+graph G {
+  graph [hostidtype="hostname", version="1:0"];
+    "leaf1":"swp51" -- "spine1":"swp1";
+    "leaf1":"swp52" -- "spine2":"swp1";
+    "leaf2":"swp51" -- "spine1":"swp2";
+    "leaf2":"swp52" -- "spine1":"swp2";
+    "spine1":"swp31" -- "wan1":"swp49";
+    "spine1":"swp32" -- "wan2":"swp49";
+    "spine2":"swp31" -- "wan1":"swp50";
+    "spine2":"swp32" -- "wan2":"swp50";
+}
