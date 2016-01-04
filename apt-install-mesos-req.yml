@@ -1,0 +1,35 @@
+---
+- hosts: mesos_servers
+  sudo: yes
+  tasks:
+    - name: Update and upgrade all packages
+    apt: upgrade=dist update_cache=yes
+
+  - name: Install a few utility tools
+    apt: name={{ item }} state=present enabled=yes
+    with_items:
+      - tar
+      - wget
+      - git
+
+  - name: Install the latest OpenJDK
+    apt: name=openjdk-7-jdk state=present enabled=yes
+
+  - name: Install autotools
+    apt: name={{ item }} state=present enabled=yes
+    with_items:
+      - autoconf
+      - libtool
+
+  - name: Install other Mesos dependencies
+    apt: name={{ item }} state=present enabled=yes
+    with_items:
+      - build-essential
+      - python-dev
+      - python-boto
+      - libcurl4-nss-dev
+      - libsasl2-dev
+      - libsasl2-modules
+      - maven
+      - libapr1-dev
+      - libsvn-dev
