@@ -1,0 +1,62 @@
+#https://community.cumulusnetworks.com/cumulus/topics/ansible-switch-basics-apt-setup
+#Example for configuring an apt cache or mirror proxy#Contents of the 90apt-proxy file:
+- name: configure apt cache proxy
+copy: content='Acquire::http::Proxy "http://192.168.1.254:3142";\n'
+        dest=/etc/apt/apt.conf.d/90apt-proxy
+  tags:
+    - apt_setup
+    - initial_setup
+ 
+#Retrieve the updated package list
+#You can use update_cache=yes on each package install or this single task
+- apt: update_cache=yes
+  tags:
+    - apt_setup
+    - initial_setup
+ 
+#You should be able to use with_items and have a list of packages in Ansible 2.0
+#But in 1.9.x I still do them individually so Ansible can prepare the dependencies one at a time
+ 
+#Install htop (Detailed process viewer)
+- apt: name=htop
+  tags:
+    - apt_setup
+    - initial_setup
+ 
+#Install tcptrace (Tool for analyzing tcpdump output)
+- apt: name=tcptrace
+  tags:
+    - apt_setup
+    - initial_setup
+ 
+#Example to enable Debian wheezy repo
+- name: Add Debian wheezy repo
+  apt_repository: state=present repo="{{ item }}"
+  with_items:
+    - deb http://ftp.us.debian.org/debian/ wheezy main contrib non-free
+    - deb-src http://ftp.us.debian.org/debian/ wheezy main contrib non-free
+  tags:
+    - apt_setup
+    - initial_setup
+ 
+#Retrieve the updated package list from the debian wheezy repo above
+- apt: update_cache=yes
+  tags:
+    - apt_setup
+    - initial_setup
+ 
+#Install bwm-ng (not in the Cumulus repo)
+- apt: name=bwm-ng 
+  tags:
+    - apt_setup
+    - initial_setup
+ 
+#Remove the Debian wheezy repositories from the sources list (Best practice)
+- name: Add Debian wheezy repo
+  apt_repository: state=absent line="{{ item }}"
+  with_items:
+    - deb http://ftp.us.debian.org/debian/ wheezy main contrib non-free
+    - deb-src http://ftp.us.debian.org/debian/ wheezy main contrib non-free
+  tags:
+    - apt_setup
+    - initial_setup
