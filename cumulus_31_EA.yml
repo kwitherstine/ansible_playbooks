@@ -4,10 +4,10 @@
   become: yes
   tasks:
   - name: configure apt sources.list - remove comments from EA repositories
-    blockinfile:
+    replace:
       dest: /etc/apt/sources.list
-      marker: "#"
-      content: ""
+      regexp: '#'
+      replace: ""
   - name: Retrieve the updated package list
     apt: update_cache=yes
   - name: Install Network command line utility NCLU
