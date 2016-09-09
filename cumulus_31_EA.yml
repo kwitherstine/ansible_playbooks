@@ -10,7 +10,7 @@
      content: ""
    - name: Retrieve the updated package list
      apt: update_cache=yes
-   - name: Install Network command line utility: NCLU
+   - name: Install Network command line utility NCLU
      apt: name=nclu
    - name: Install cumulus-netq
      apt: name=cumulus-netq
