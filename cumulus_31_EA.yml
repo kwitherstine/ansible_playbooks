@@ -6,18 +6,18 @@
   - name: configure apt sources.list - remove comments from EA repositories
     replace:
       dest: /etc/apt/sources.list
-      regexp: ' #'
-      replace: ""
+      regexp: ' #deb'
+      replace: "deb"
   - name: Retrieve the updated package list
     apt: update_cache=yes
   - name: Install Network command line utility NCLU
     apt: name=nclu
   - name: Install cumulus-netq
     apt: name=cumulus-netq
-  - name: Install OpenStack ML2 part 1
-    apt: name=python-falcon
-  - name: Install OpenStack ML2 part 2
-    apt: name=python-cumulus-restapi
+#  - name: Install OpenStack ML2 part 1
+#    apt: name=python-falcon
+#  - name: Install OpenStack ML2 part 2
+#    apt: name=python-cumulus-restapi
   - name: Install PIM Routing
     apt: name=cumulus-pim
   - name: Install TACACS+ client
