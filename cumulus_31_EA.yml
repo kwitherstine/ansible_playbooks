@@ -6,7 +6,7 @@
   - name: configure apt sources.list - remove comments from EA repositories
     replace:
       dest: /etc/apt/sources.list
-      regexp: '#'
+      regexp: ' #'
       replace: ""
   - name: Retrieve the updated package list
     apt: update_cache=yes
