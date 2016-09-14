@@ -18,9 +18,9 @@
 #    apt: name=python-falcon
 #  - name: Install OpenStack ML2 part 2
 #    apt: name=python-cumulus-restapi
-  - name: Install PIM Routing
-    apt: name=cumulus-pim
+#  - name: Install PIM Routing
+#    apt: name=cumulus-pim
   - name: Install TACACS+ client
     apt: name=tacplus-client
-  - name: apt-get upgrade
-    apt: upgrade=dist
+#  - name: apt-get upgrade
+#    apt: upgrade=dist
