@@ -1,0 +1,34 @@
+- name: Verify we are running 3.1.0
+  fail:
+    msg: >
+      "Cumulus Linux version is not 3.1.0,
+      EA feature may not be supported"
+  when: ansible_lsb.release != "3.1.0"
+---
+- name: Enable APT Proxy
+  copy:
+    src: apt.conf
+    dest: /etc/apt/apt.conf
+- name: Copy updated sources.list (TACACS)
+  copy:
+    src: sources.list
+    dest: /etc/apt/sources.list
+  register: update_cache
+- name: Update Cache (TACACS)
+  apt:
+    update_cache: yes
+  when: update_cache.changed
+- name: Install cumulus-tacacs+
+  apt:
+    name: tacplus-client
+    state: present
+- name: Copy TACACS server settings
+  template:
+    src: tacacs.j2
+    dest: /etc/tacplus_servers
+  notify: restart_auditd
+- name: Copy TACACS authen settings
+  template:
+    src: audisp-tac_plus.conf.j2
+    dest: /etc/audisp/audisp-tac_plus.conf
+  notify: restart_auditd
