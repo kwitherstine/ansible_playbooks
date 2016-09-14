@@ -1,6 +1,6 @@
 ---
 # update apt sources list to enable EA features in Cumulus Linux
-- hosts: network
+- hosts: all
   become: yes
   tasks:
   - name: configure apt sources.list - remove comments from EA repositories
