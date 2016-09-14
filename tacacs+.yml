@@ -1,10 +1,10 @@
+---
 - name: Verify we are running 3.1.0
   fail:
     msg: >
       "Cumulus Linux version is not 3.1.0,
       EA feature may not be supported"
   when: ansible_lsb.release != "3.1.0"
----
 - name: Enable APT Proxy
   copy:
     src: apt.conf
