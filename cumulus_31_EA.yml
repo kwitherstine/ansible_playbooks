@@ -4,10 +4,7 @@
   become: yes
   tasks:
   - name: configure apt sources.list - remove comments from EA repositories
-    replace:
-      dest: /etc/apt/sources.list
-      regexp: ' #deb'
-      replace: "deb"
+    copy: sources.list /etc/apt/sources.list
   - name: Retrieve the updated package list
     apt: update_cache=yes
   - name: Install Network command line utility NCLU
