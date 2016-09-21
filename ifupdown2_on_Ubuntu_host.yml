@@ -1,0 +1,105 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: Check that this is Ubuntu 14.04 to Proceed
+    shell: 'cat /etc/lsb-release | grep DISTRIB_RELEASE | cut -d "=" -f2'
+    register: distribution
+
+  - name: Check that IFUPDOWN2 is already installed
+    shell: "dpkg --get-selections ifupdown2"
+    register: installed
+    failed_when: " distribution.stdout != '14.04' "
+
+  - name: "Setting Installed Already Fact: False"
+    set_fact:
+        installed_already: False
+    when: " '\tinstall' not in installed.stdout "
+
+  - name: "Setting Installed Already Fact: True"
+    set_fact:
+        installed_already: True
+    when: " '\tinstall' in installed.stdout "
+
+  - name: Install Ubuntu Xenial Repository
+    shell: 'echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial universe" > /etc/apt/sources.list.d/xenial.list'
+    when: " not installed_already "
+
+  - name: Update repositories cache and install IFUPDOWN2 Depends
+    apt: name={{ item }} update_cache=yes
+    with_items:
+     - python-ipaddr
+     - python-argcomplete
+     - python-gvgen
+     - python-mako
+    when: " not installed_already "
+
+  - name: Set Xenial Repo to Low Priority
+    shell: 'echo -e "Explanation: give xenial a low priority number\nPackage: *\nPin: release a=xenial\nPin-Priority: 100\n" > /etc/apt/preferences.d/xenial'
+    when: " not installed_already "
+
+  - name: Set Hold On IFUPDOWN Package
+    shell: 'echo ifupdown hold | dpkg --set-selections'
+    when: " not installed_already "
+
+  - name: Download IFUPDOWN2 Package to /root
+    shell: 'cd /root && apt-get download ifupdown2'
+    when: " not installed_already "
+
+  - name: Perform Manual Package Install of IFUPDOWN2
+    shell: dpkg --force-conflicts --force-depends --force-overwrite -i /root/ifupdown2*.deb
+    when: " not installed_already "
+
+  - name: Confirming We Won't Break Anything (Part 1 of 2)
+    shell: 'grep -c -e "^.*Conflicts: ifupdown$" /var/lib/dpkg/status'
+    register: result1
+    when: " not installed_already "
+
+  - name: Confirming We Won't Break Anything (Part 2 of 2)
+    shell: 'grep -c "Depends: python:any (>= 2.7.5-5~), init-system-helpers (>= 1.18~), python-argcomplete, python-ipaddr" /var/lib/dpkg/status'
+    register: result2
+    failed_when: "'1' != result1.stdout"
+    when: " not installed_already "
+
+  - name: Fix IFUPDOWN2 Package Dependencies 
+    shell: 'sed -i "s/Depends: python:any (>= 2.7.5-5~), init-system-helpers (>= 1.18~), python-argcomplete, python-ipaddr/Depends: python:any (>= 2.7.5-5~), init-system-helpers (>= 1.14~), python-argcomplete, python-ipaddr/g" /var/lib/dpkg/status'
+    failed_when: "'1' != result2.stdout"
+    when: " not installed_already "
+
+  - name: Fix IFUPDOWN2 Package Conflicts 
+    shell: 'sed -i "/Conflicts: ifupdown/d" /var/lib/dpkg/status'
+    when: " not installed_already "
+
+  - name: Disable Ubuntu Xenial Repository
+    shell: 'sed -i "s/deb/#deb/g" /etc/apt/sources.list.d/xenial.list'
+    when: " not installed_already "
+
+  - name: Checking IFQUERY Output to Confirm Installation
+    shell: 'ifquery -ar'
+    register: test_ifquery
+
+  - debug: msg=" {{ test_ifquery.stdout }} "
+
+  - name: Install bridge-utils and PIP /w cache update
+    apt: name={{ item }} update_cache=yes
+    with_items:
+     - bridge-utils
+     - python-pip
+    when: " not installed_already "
+
+  - name: Install bridge-utils and PIP w/o cache update
+    apt: name={{ item }} update_cache=yes
+    with_items:
+     - bridge-utils
+     - python-pip
+    when: installed_already
+
+  - name: Install Netshow
+    shell: pip install netshow-linux-lib
+
+  - name: Netshow Output to Confirm Installation
+    shell: netshow system
+    register: debug_output
+
+  - debug: msg=" {{ debug_output.stdout }} "

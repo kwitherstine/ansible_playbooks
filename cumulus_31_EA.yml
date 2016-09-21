@@ -1,10 +1,14 @@
 ---
 # update apt sources list to enable EA features in Cumulus Linux
-- hosts: network
+- hosts: all
   become: yes
   tasks:
   - name: configure apt sources.list - remove comments from EA repositories
+<<<<<<< HEAD
     copy: sources.list /etc/apt/sources.list
+=======
+    copy: src=EA3_sources.list dest=/etc/apt/sources.list
+>>>>>>> 88e3b10810b30cb367f016c312fcf86c8cb8cc92
   - name: Retrieve the updated package list
     apt: update_cache=yes
   - name: Install Network command line utility NCLU

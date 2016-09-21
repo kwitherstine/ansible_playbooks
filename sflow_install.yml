@@ -1,0 +1,19 @@
+---
+# install sflow agent and configure settings per
+# https://docs.cumulusnetworks.com/display/DOCS/Monitoring+System+Statistics+and+Network+Traffic+with+sFlow
+# using the manual method and pushing /etc/hsflowd.conf
+#
+# You'll need to edit hsflowd.conf to point to a legit IP address for your collector
+# 
+- hosts: network
+  become: yes
+  tasks:
+  - name: Retrieve the updated package list
+    apt: update_cache=yes
+  - name: Install hsflowd
+    apt: name=hsflowd
+  - name: Configure ptmd topology.dot
+    copy: src=hsflowd.conf dest=/etc/hsflowd.conf
+  - name: Reload hsflow process
+    sudo: yes
+    command: sudo systemctl start hsflowd.service
