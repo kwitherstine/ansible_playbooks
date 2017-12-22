@@ -27,16 +27,16 @@
 #        flat=yes
         
      - name: backup frr settings
-      fetch:
-        dest=roles/{{ansible_hostname}}/frr
-        src=/etc/default/frr
-        flat=yes
+       fetch:
+         dest=roles/{{ansible_hostname}}/frr
+         src=/etc/default/frr
+         flat=yes
        
      - name: backup COPP rules
-      fetch:
-        dest=roles/{{ansible_hostname}}/frr
-        src=/etc/cumulus/acl/policy.d/00control_plane.rules
-        flat=yes
+       fetch:
+         dest=roles/{{ansible_hostname}}/frr
+         src=/etc/cumulus/acl/policy.d/00control_plane.rules
+         flat=yes
 
 # The following line is the method to copy a SINGLE interfaces file to the ansible server as
 # a backup location. If using interfaces.d directory, use the next option in this file.
