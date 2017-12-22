@@ -1,5 +1,7 @@
 ---
-- hosts: network
+# This playbook will backup the listed files to the roles directory, and create a subdir with the ansible hostname. 
+#
+- hosts: all
   become: yes
   tasks:
     - name: backup frr daemons file
@@ -26,26 +28,26 @@
 #        src=/etc/cumulus/datapath/traffic.conf
 #        flat=yes
         
-     - name: backup frr settings
-       fetch:
-         dest=roles/{{ansible_hostname}}/frr
-         src=/etc/default/frr
-         flat=yes
+    - name: backup frr settings
+      fetch:
+        dest=roles/{{ansible_hostname}}/frr
+        src=/etc/default/frr
+        flat=yes
        
-     - name: backup COPP rules
-       fetch:
-         dest=roles/{{ansible_hostname}}/frr
-         src=/etc/cumulus/acl/policy.d/00control_plane.rules
-         flat=yes
+    - name: backup COPP rules
+      fetch:
+        dest=roles/{{ansible_hostname}}/00control_plane.rules
+        src=/etc/cumulus/acl/policy.d/00control_plane.rules
+        flat=yes
 
 # The following line is the method to copy a SINGLE interfaces file to the ansible server as
 # a backup location. If using interfaces.d directory, use the next option in this file.
 
-   - name: backup single interfaces file
-     fetch:
-       dest=roles/leafs/{{ansible_hostname}}/interfaces
-       src=/etc/network/interfaces
-       flat=yes
+    - name: backup single interfaces file
+      fetch:
+        dest=roles/leafs/{{ansible_hostname}}/interfaces
+        src=/etc/network/interfaces
+        flat=yes
 
 # The following line is a way to copy the entire /etc/network/interfaces.d directory into a backup location. 
 # syncronize module would be preferred, but won't work with Vagrant for test environments.
