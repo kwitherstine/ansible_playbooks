@@ -2,16 +2,16 @@
 - hosts: network
   become: yes
   tasks:
-    - name: backup quagga daemons file
+    - name: backup frr daemons file
       fetch:
         dest=roles/leafs/{{ansible_hostname}}/daemons
-        src=/etc/quagga/daemons
+        src=/etc/frr/daemons
         flat=yes
 
-    - name: backup Quagga.conf
+    - name: backup frr.conf
       fetch:
         dest=roles/leafs/{{ansible_hostname}}/Quagga.conf
-        src=/etc/quagga/Quagga.conf
+        src=/etc/frr/frr.conf
         flat=yes
         
     - name: backup ports.conf
