@@ -1,0 +1,33 @@
+---
+# Run with sudo permissions locally.
+- hosts: all
+  become: yes
+  tasks:
+    - name: copy ports.conf
+      copy: src=../{{ansible_hostname}}/ports.conf dest=/etc/cumulus/
+      notify: restart switchd
+      ignore_errors: yes
+
+    - name: copy interfaces
+      copy: src=../{{ansible_hostname}}/interfaces dest=/etc/network/
+      notify: reload networking
+      
+    - name: copy frr daemons
+      copy: src=../{{ansible_hostname}}/daemons dest=/etc/frr/
+      notify: restart frr
+      ignore_errors: yes
+
+    - name: copy frr settings
+      copy: src=../{{ansible_hostname}}/frr dest=/etc/default/
+      notify: restart frr
+      ignore_errors: yes
+      
+    - name: copy frr configuration file
+      copy: src=../{{ansible_hostname}}/frr.conf dest=/etc/frr/
+      notify: reload frr
+      ignore_errors: yes
+      
+    - name: copy COPP rules
+      copy: src=../{{ansible_hostname}}/00control_plane.rules dest=/etc/cumulus/acl/policy.d/
+      command: sudo cl-acltool -i
+      ignore_errors: yes   
