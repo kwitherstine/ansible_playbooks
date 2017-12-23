@@ -29,5 +29,7 @@
       
     - name: copy COPP rules
       copy: src=../{{ansible_hostname}}/00control_plane.rules dest=/etc/cumulus/acl/policy.d/
+    
+    - name: install COPP rules
       command: sudo cl-acltool -i
       ignore_errors: yes   
